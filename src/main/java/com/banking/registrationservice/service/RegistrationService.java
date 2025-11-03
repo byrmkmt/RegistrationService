@@ -53,7 +53,7 @@ public class RegistrationService {
      * Contact Information
      */
     @Transactional
-    public CustomerAccount saveContactInformation(Long accountId, ContactInformationDTO dto) {
+    public void saveContactInformation(Long accountId, ContactInformationDTO dto) {
         CustomerAccount account = registrationRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         ContactInformation contact = new ContactInformation();
@@ -61,13 +61,12 @@ public class RegistrationService {
         contact.setPhoneNumber(dto.getPhoneNumber());
         contact.setOpenAddress(dto.getOpenAddress());
         account.getPersonalInformation().setContactInformation(contact);
-        return registrationRepository.save(account);
     }
 
     // Step 3: Complete
     @Transactional
-    public CustomerAccount completeRegistration(Long accountId, AccountInformationDTO dto) {
-        CustomerAccount account = registrationRepository.findById(accountId)
+    public void completeRegistration(AccountInformationDTO dto) {
+        CustomerAccount account = registrationRepository.findById(dto.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer account not found"));
         if (account.getPersonalInformation() == null) {
             throw new RuntimeException("Personal information missed.");
@@ -75,12 +74,7 @@ public class RegistrationService {
         if (account.getPersonalInformation().getContactInformation() == null) {
             throw new RuntimeException("Contact information missed");
         }
-
-        // Send dto as a kafka event to login service
-        // I don't suggest to send private information like password with Kafka events to other services
-        // But this is for an example.
-
+        account.setPassword(dto.getPassword());
         account.setStatus(RegistrationStatus.COMPLETE);
-        return registrationRepository.save(account);
     }
 }

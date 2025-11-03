@@ -30,13 +30,13 @@ public class RegistrationController {
 
     @PostMapping("/registrar/contactInfo/{accountId}")
     public ResponseEntity<?> registrarCustomerInformation(@PathVariable Long accountId, @RequestBody @Valid ContactInformationDTO dto) {
-        CustomerAccount account = service.saveContactInformation(accountId, dto);
-        return ResponseEntity.ok(Map.of("Customer Id", account.getCustomerId(), "message", "Contact information saved"));
+        service.saveContactInformation(accountId, dto);
+        return ResponseEntity.ok(Map.of("Customer Id", accountId, "message", "Contact information saved"));
     }
 
-    @PostMapping("/registrar/complete/{accountId}")
-    public ResponseEntity<?> registrarSetComplete(@PathVariable Long accountId,@RequestBody  @Valid AccountInformationDTO dto) {
-        CustomerAccount account = service.completeRegistration(accountId, dto);
-        return ResponseEntity.ok(Map.of("Customer Id", account.getCustomerId(), "message", "Registration complete"));
+    @PostMapping("/registrar/complete")
+    public ResponseEntity<?> registrarSetComplete(@RequestBody  @Valid AccountInformationDTO dto) {
+        service.completeRegistration(dto);
+        return ResponseEntity.ok(Map.of("Customer Id", dto.getCustomerId(), "message", "Registration complete"));
     }
 }
