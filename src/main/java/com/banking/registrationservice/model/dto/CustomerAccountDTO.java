@@ -20,13 +20,15 @@ import jakarta.validation.constraints.NotNull;
 */
 public class CustomerAccountDTO {
     private Long customerId;
+    private String password;
     private PersonalInformationDTO personalInformation;
     private RegistrationStatus status;
 
     public CustomerAccountDTO() {}
 
-    public CustomerAccountDTO(Long customerId, PersonalInformationDTO personalInformation, RegistrationStatus status) {
+    public CustomerAccountDTO(Long customerId, String password, PersonalInformationDTO personalInformation, RegistrationStatus status) {
         this.customerId = customerId;
+        this.password = password;
         this.personalInformation = personalInformation;
         this.status = status;
     }
@@ -37,6 +39,14 @@ public class CustomerAccountDTO {
 
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @NotNull(message = "Personal information boş olamaz.")

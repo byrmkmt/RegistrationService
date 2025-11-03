@@ -12,6 +12,7 @@ import java.util.Date;
 @Table(name = "customer_account")
 public class CustomerAccount implements Serializable {
     private Long customerId;
+    private String password;
     private PersonalInformation personalInformation;
     private Date creationDate;
     private Date lastModifiedDate;
@@ -20,13 +21,13 @@ public class CustomerAccount implements Serializable {
     public CustomerAccount() {
     }
 
-    public CustomerAccount(RegistrationStatus status, Date lastModifiedDate, Date creationDate, PersonalInformation personalInformation,
-                           String branch, String accountNumber, Long customerId) {
-        this.status = status;
-        this.lastModifiedDate = lastModifiedDate;
-        this.creationDate = creationDate;
-        this.personalInformation = personalInformation;
+    public CustomerAccount(Long customerId, String password, PersonalInformation personalInformation, Date creationDate, Date lastModifiedDate, RegistrationStatus status) {
         this.customerId = customerId;
+        this.password = password;
+        this.personalInformation = personalInformation;
+        this.creationDate = creationDate;
+        this.lastModifiedDate = lastModifiedDate;
+        this.status = status;
     }
 
     @Id
@@ -38,6 +39,15 @@ public class CustomerAccount implements Serializable {
 
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
+    }
+
+    @Column(name = "password", nullable = false)
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @OneToOne(cascade = CascadeType.ALL)

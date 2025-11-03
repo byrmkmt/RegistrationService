@@ -1,5 +1,6 @@
 package com.banking.registrationservice.controller;
 
+import com.banking.registrationservice.model.dto.AccountInformationDTO;
 import com.banking.registrationservice.model.dto.ContactInformationDTO;
 import com.banking.registrationservice.model.dto.CustomerAccountDTO;
 import com.banking.registrationservice.model.entity.CustomerAccount;
@@ -34,8 +35,8 @@ public class RegistrationController {
     }
 
     @PostMapping("/registrar/complete/{accountId}")
-    public ResponseEntity<?> registrarSetComplete(@PathVariable Long accountId) {
-        CustomerAccount account = service.completeRegistration(accountId);
+    public ResponseEntity<?> registrarSetComplete(@PathVariable Long accountId,@RequestBody  @Valid AccountInformationDTO dto) {
+        CustomerAccount account = service.completeRegistration(accountId, dto);
         return ResponseEntity.ok(Map.of("Customer Id", account.getCustomerId(), "message", "Registration complete"));
     }
 }

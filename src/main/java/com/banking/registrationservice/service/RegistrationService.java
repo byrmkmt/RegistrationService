@@ -1,5 +1,6 @@
 package com.banking.registrationservice.service;
 
+import com.banking.registrationservice.model.dto.AccountInformationDTO;
 import com.banking.registrationservice.model.dto.ContactInformationDTO;
 import com.banking.registrationservice.model.dto.CustomerAccountDTO;
 import com.banking.registrationservice.model.entity.ContactInformation;
@@ -65,17 +66,19 @@ public class RegistrationService {
 
     // Step 3: Complete
     @Transactional
-    public CustomerAccount completeRegistration(Long accountId) {
+    public CustomerAccount completeRegistration(Long accountId, AccountInformationDTO dto) {
         CustomerAccount account = registrationRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Customer account not found"));
-
         if (account.getPersonalInformation() == null) {
             throw new RuntimeException("Personal information missed.");
         }
-
         if (account.getPersonalInformation().getContactInformation() == null) {
             throw new RuntimeException("Contact information missed");
         }
+
+        // Send dto as a kafka event to login service
+        // I don't suggest to send private information like password with Kafka events to other services
+        // But this is for an example.
 
         account.setStatus(RegistrationStatus.COMPLETE);
         return registrationRepository.save(account);
