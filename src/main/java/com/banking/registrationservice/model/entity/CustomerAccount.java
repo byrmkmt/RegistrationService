@@ -1,5 +1,6 @@
 package com.banking.registrationservice.model.entity;
 
+import com.banking.loginservice.model.entity.LoginData;
 import com.banking.registrationservice.model.enums.RegistrationStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,7 +13,7 @@ import java.util.Date;
 @Table(name = "customer_account")
 public class CustomerAccount implements Serializable {
     private Long customerId;
-    private String password;
+    private LoginData loginData;
     private PersonalInformation personalInformation;
     private Date creationDate;
     private Date lastModifiedDate;
@@ -21,9 +22,9 @@ public class CustomerAccount implements Serializable {
     public CustomerAccount() {
     }
 
-    public CustomerAccount(Long customerId, String password, PersonalInformation personalInformation, Date creationDate, Date lastModifiedDate, RegistrationStatus status) {
+    public CustomerAccount(Long customerId, LoginData loginData, PersonalInformation personalInformation, Date creationDate, Date lastModifiedDate, RegistrationStatus status) {
         this.customerId = customerId;
-        this.password = password;
+        this.loginData = loginData;
         this.personalInformation = personalInformation;
         this.creationDate = creationDate;
         this.lastModifiedDate = lastModifiedDate;
@@ -41,13 +42,14 @@ public class CustomerAccount implements Serializable {
         this.customerId = customerId;
     }
 
-    @Column(name = "password", nullable = false)
-    public String getPassword() {
-        return password;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "login_info_id", foreignKey = @ForeignKey(name = "fk_login_info"))
+    public LoginData getLoginData() {
+        return loginData;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setLoginData(LoginData loginData) {
+        this.loginData = loginData;
     }
 
     @OneToOne(cascade = CascadeType.ALL)

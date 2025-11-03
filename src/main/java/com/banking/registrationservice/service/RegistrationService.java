@@ -1,5 +1,6 @@
 package com.banking.registrationservice.service;
 
+import com.banking.loginservice.model.entity.LoginData;
 import com.banking.registrationservice.model.dto.AccountInformationDTO;
 import com.banking.registrationservice.model.dto.ContactInformationDTO;
 import com.banking.registrationservice.model.dto.CustomerAccountDTO;
@@ -74,7 +75,7 @@ public class RegistrationService {
         if (account.getPersonalInformation().getContactInformation() == null) {
             throw new RuntimeException("Contact information missed");
         }
-        account.setPassword(dto.getPassword());
+        account.setLoginData(new LoginData(account.getPersonalInformation().getTcNumber(), dto.getPassword()));
         account.setStatus(RegistrationStatus.COMPLETE);
     }
 }

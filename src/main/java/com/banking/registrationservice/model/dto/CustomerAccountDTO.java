@@ -1,34 +1,22 @@
 package com.banking.registrationservice.model.dto;
 
 
+import com.banking.loginservice.model.dto.LoginDataDTO;
 import com.banking.registrationservice.model.enums.RegistrationStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-/*
-{
-        "accountNumber":"342212331",
-        "branch": "Pendik",
-        "status":"IN_PROGRESS",
-        "personalInformation": {
-        "firstName":"Bayram",
-        "lastName":"Komut",
-        "tcNumber":"33422123",
-        "dateOfBirth":"1997-11-07"
-        }
-}
-*/
 public class CustomerAccountDTO {
     private Long customerId;
-    private String password;
+    private LoginDataDTO loginData;
     private PersonalInformationDTO personalInformation;
     private RegistrationStatus status;
 
     public CustomerAccountDTO() {}
 
-    public CustomerAccountDTO(Long customerId, String password, PersonalInformationDTO personalInformation, RegistrationStatus status) {
+    public CustomerAccountDTO(Long customerId, LoginDataDTO loginData, PersonalInformationDTO personalInformation, RegistrationStatus status) {
         this.customerId = customerId;
-        this.password = password;
+        this.loginData = loginData;
         this.personalInformation = personalInformation;
         this.status = status;
     }
@@ -41,12 +29,12 @@ public class CustomerAccountDTO {
         this.customerId = customerId;
     }
 
-    public String getPassword() {
-        return password;
+    public LoginDataDTO getLoginData() {
+        return loginData;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setLoginData(LoginDataDTO loginData) {
+        this.loginData = loginData;
     }
 
     @NotNull(message = "Personal information boş olamaz.")
