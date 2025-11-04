@@ -26,7 +26,7 @@ public class LoginData implements Serializable, UserDetails {
 
     }
 
-    public LoginData(String password, String username) {
+    public LoginData(String username, String password) {
         this.password = password;
         this.username = username;
     }
