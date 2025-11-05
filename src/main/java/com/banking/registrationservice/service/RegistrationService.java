@@ -1,6 +1,8 @@
 package com.banking.registrationservice.service;
 
 import com.banking.loginservice.model.entity.LoginData;
+import com.banking.registrationservice.event.model.AccountCreatedEvent;
+import com.banking.registrationservice.event.publisher.DomainEventPublisher;
 import com.banking.registrationservice.model.dto.AccountInformationDTO;
 import com.banking.registrationservice.model.dto.ContactInformationDTO;
 import com.banking.registrationservice.model.dto.CustomerAccountDTO;
@@ -12,15 +14,18 @@ import com.banking.registrationservice.repository.RegistrationRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
 public class RegistrationService {
 
+    private final DomainEventPublisher publisher;
     private final RegistrationRepository registrationRepository;
 
-    public RegistrationService(RegistrationRepository registrationRepository) {
+    public RegistrationService(RegistrationRepository registrationRepository, DomainEventPublisher publisher) {
         this.registrationRepository = registrationRepository;
+        this.publisher = publisher;
     }
 
     /**
@@ -77,5 +82,14 @@ public class RegistrationService {
         }
         account.setLoginData(new LoginData(account.getPersonalInformation().getTcNumber(), dto.getPassword()));
         account.setStatus(RegistrationStatus.COMPLETE);
+        publisher.publish(new AccountCreatedEvent(new Date(),
+                account.getPersonalInformation().getTcNumber(),
+                account.getCustomerId().toString(),
+                account.getPersonalInformation().getFirstName(),
+                account.getPersonalInformation().getLastName(),
+                "ACTIVATE",
+                account.getCreationDate(),
+                account.getLastModifiedDate()
+        ));
     }
 }
