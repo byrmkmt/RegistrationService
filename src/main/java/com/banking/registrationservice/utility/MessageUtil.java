@@ -4,13 +4,15 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Component;
 
+import java.util.Locale;
+
 @Component
 public class MessageUtil {
 
     private static MessageSourceAccessor accessor;
 
     public MessageUtil(MessageSource messageSource) {
-        accessor = new MessageSourceAccessor(messageSource);
+        accessor = new MessageSourceAccessor(messageSource, Locale.forLanguageTag("tr-TR"));
     }
 
     public static String get(String key, Object... args) {
