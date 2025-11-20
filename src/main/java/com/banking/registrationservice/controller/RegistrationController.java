@@ -6,13 +6,16 @@ import com.banking.registrationservice.model.dto.CustomerAccountDTO;
 import com.banking.registrationservice.model.entity.CustomerAccount;
 import com.banking.registrationservice.service.RegistrationService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/registration")
+@Validated
 @CrossOrigin(origins = "http://localhost:5173")
 public class RegistrationController {
 
@@ -23,19 +26,19 @@ public class RegistrationController {
     }
 
     @PostMapping("/registrar/personalInfo")
-    public ResponseEntity<?> registrarPersonalInformation(@RequestBody @Valid CustomerAccountDTO dto) {
+    public ResponseEntity<?> registrarPersonalInformation(@RequestBody @Valid @NotNull CustomerAccountDTO dto) {
         CustomerAccount account = service.savePersonalInformation(dto);
         return ResponseEntity.ok(Map.of("Customer Id", account.getCustomerId(), "message", "Personal information saved"));
     }
 
     @PostMapping("/registrar/contactInfo/{accountId}")
-    public ResponseEntity<?> registrarCustomerInformation(@PathVariable Long accountId, @RequestBody @Valid ContactInformationDTO dto) {
+    public ResponseEntity<?> registrarCustomerInformation(@PathVariable Long accountId, @RequestBody @Valid @NotNull ContactInformationDTO dto) {
         service.saveContactInformation(accountId, dto);
         return ResponseEntity.ok(Map.of("Customer Id", accountId, "message", "Contact information saved"));
     }
 
     @PostMapping("/registrar/complete")
-    public ResponseEntity<?> registrarSetComplete(@RequestBody  @Valid AccountInformationDTO dto) {
+    public ResponseEntity<?> registrarSetComplete(@RequestBody  @Valid @NotNull AccountInformationDTO dto) {
         service.completeRegistration(dto);
         return ResponseEntity.ok(Map.of("Customer Id", dto.getCustomerId(), "message", "Registration complete"));
     }

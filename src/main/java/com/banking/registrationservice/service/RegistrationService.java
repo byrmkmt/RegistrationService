@@ -1,6 +1,10 @@
 package com.banking.registrationservice.service;
 
 import com.banking.loginservice.model.entity.LoginData;
+import com.banking.registrationservice.error.ErrorCodes;
+import com.banking.registrationservice.error.exceptions.AccountNotFoundException;
+import com.banking.registrationservice.error.exceptions.AccountExistsException;
+import com.banking.registrationservice.error.exceptions.MissingInformationException;
 import com.banking.registrationservice.event.model.AccountCreatedEvent;
 import com.banking.registrationservice.event.publisher.DomainEventPublisher;
 import com.banking.registrationservice.model.dto.AccountInformationDTO;
@@ -42,14 +46,14 @@ public class RegistrationService {
         account.setStatus(RegistrationStatus.IN_PROGRESS);
         account.setPersonalInformation(personalInfo);
         if(registrationRepository.findByPersonalInformation_TcNumberAndStatus(personalInfo.getTcNumber(), RegistrationStatus.COMPLETE).isPresent()) {
-            throw new RuntimeException("Customer with T.C. number " + account.getCustomerId() + " already exists");
+            throw AccountExistsException.of(ErrorCodes.CUSTOMER_EXIST,account.getCustomerId());
         } else {
             Optional<CustomerAccount> mayBeCurrent = registrationRepository.findByPersonalInformation_TcNumberAndStatus(personalInfo.getTcNumber(), RegistrationStatus.IN_PROGRESS);
             if(mayBeCurrent.isPresent()) {
                 if(mayBeCurrent.get().getCustomerId().equals(account.getCustomerId()))
                     return registrationRepository.save(account);
                 else
-                    throw new RuntimeException("Customer with Account Number " + account.getCustomerId() + " already exists");
+                    throw AccountExistsException.of(ErrorCodes.ACCOUNT_NUMBER_EXIST,account.getCustomerId());
             }
         }
         return registrationRepository.save(account);
@@ -61,7 +65,7 @@ public class RegistrationService {
     @Transactional
     public void saveContactInformation(Long accountId, ContactInformationDTO dto) {
         CustomerAccount account = registrationRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> AccountNotFoundException.of(ErrorCodes.ACCOUNT_NOT_FOUND));
         ContactInformation contact = new ContactInformation();
         contact.setEmail(dto.getEmail());
         contact.setPhoneNumber(dto.getPhoneNumber());
@@ -73,12 +77,12 @@ public class RegistrationService {
     @Transactional
     public void completeRegistration(AccountInformationDTO dto) {
         CustomerAccount account = registrationRepository.findById(dto.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer account not found"));
+                .orElseThrow(() -> AccountNotFoundException.of(ErrorCodes.ACCOUNT_NOT_FOUND));
         if (account.getPersonalInformation() == null) {
-            throw new RuntimeException("Personal information missed.");
+            throw MissingInformationException.of(ErrorCodes.PERSONAL_INFORMATION_NOT_FOUND);
         }
         if (account.getPersonalInformation().getContactInformation() == null) {
-            throw new RuntimeException("Contact information missed");
+            throw MissingInformationException.of(ErrorCodes.CONTACT_INFORMATION_NOT_FOUND);
         }
         account.setLoginData(new LoginData(account.getPersonalInformation().getTcNumber(), dto.getPassword()));
         account.setStatus(RegistrationStatus.COMPLETE);
