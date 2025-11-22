@@ -1,10 +1,11 @@
 package com.banking.registrationservice.handler;
 
-import com.banking.registrationservice.error.ApiError;
+import com.banking.common.ApiError;
 import com.banking.registrationservice.error.exceptions.BaseException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,8 +13,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice
-public class GlobalExceptionHandler {
+@RestControllerAdvice("com.banking.registrationservice")
+@Component("registerExceptionHandler")
+public class RegisterExceptionHandler {
 
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ApiError> handleBaseExceptions(BaseException ex, HttpServletRequest request) {

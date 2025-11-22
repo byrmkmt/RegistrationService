@@ -1,4 +1,4 @@
-package com.banking.registrationservice.error;
+package com.banking.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

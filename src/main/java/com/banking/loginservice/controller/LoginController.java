@@ -1,5 +1,6 @@
 package com.banking.loginservice.controller;
 
+import com.banking.common.ApiError;
 import com.banking.loginservice.model.dto.LoginDataDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,15 +26,11 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDataDTO request) {
-        try {
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-            );
-            return ResponseEntity.ok("Login success");
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
+    public ResponseEntity<ApiSuccess> login(@RequestBody LoginDataDTO request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+        );
+        return ResponseEntity.ok(new ApiSuccess("Giriş başarılı."));
     }
 
     @PostMapping("/logout")
